@@ -4,8 +4,8 @@ import { registerUser, loginUser, logoutUser} from "../controllers/user.controll
 
 const userRouter = Router();
 
-userRouter.route("/login").post(registerUser);
-userRouter.route("/signup").post(loginUser);
-userRouter.route("/logout").post(verifyJWT, logoutUser);
+userRouter.route("/login").post(loginUser);
+userRouter.route("/signup").post(registerUser);
+userRouter.route("/logout").post(logoutUser);
 
 export default userRouter;

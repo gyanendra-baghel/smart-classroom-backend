@@ -1,10 +1,12 @@
 import {Router} from "express"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { registerUser, loginUser, logoutUser} from "../controllers/user.controller.js"
+import { createQuiz, getQuiz, submitQuiz, quizResult} from "../controllers/quiz.controller.js"
 
-const userRouter = Router();
+const quizRouter = Router();
 
-quizRouter.route("/:id").get(verifyJWT, registerUser);
-quizRouter.route("/submit").post(verifyJWT, logoutUser);
+quizRouter.route("/create").get(createQuiz);
+quizRouter.route("/:quizId").get(getQuiz);
+quizRouter.route("/:quizId/submit").post(submitQuiz);
+quizRouter.route("/:quizId/result").get(quizResult);
 
-export default userRouter;
+export default quizRouter;

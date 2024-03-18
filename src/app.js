@@ -23,8 +23,12 @@ app.use(cookieParser())
 
 import userRouter from "./routes/user.route.js"
 import healthRouter from "./routes/health.route.js"
+import quizRouter from "./routes/quiz.route.js"
+import classRoomRouter from "./routes/classroom.route.js"
 
 app.use("/api/v1/users", userRouter)
 app.use("/api/v1/health", healthRouter)
+app.use("/api/v1/quiz", quizRouter)
+app.use("/api/v1/classroom", classRoomRouter)
 
 export {app}

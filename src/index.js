@@ -15,7 +15,7 @@ socketHandler(server)
 connectDB()
 .then(() => {
     server.listen(process.env.PORT, () => {
-        console.log(`⚙️ Socket and Server is running at port : ${process.env.PORT}`);
+        console.log(`⚙️  Socket and Server is running at port : ${process.env.PORT}`);
     })
 })
 .catch((err) => {

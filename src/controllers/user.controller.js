@@ -2,34 +2,39 @@ import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 
 const registerUser = async (req, res) => {
-    const {fullname, email, username, password} = req.body
+    const {fullname, email, username, password, role } = req.body
 
-    if([fullname, email, username, password].some((field) => field.trim() === "")) {
-        throw new Error("All fields are required.");
+    console.log(fullname, email, username, password);
+
+    if([fullname, email, username, password].some((field) => !field || field.trim() === "")) {
+        return res.status(404).json({ message: 'All fields are required.' });
     }
 
-    const existedUser = User.findOne({ username });
+    const existedUser = await User.findOne({ username });
 
     if(existedUser) {
-        throw new Error("User with username already exists.");
+        console.log("User Exist");
+        return res.status(404).json({ message: 'User with username already exists.' });
+    } else {
+        console.log("User not Exist");
+        return res.status(200).json({ message: 'User with username not already exists.' });
     }
-
-    const newUser = await User.create({
-        fullname,
-        email,
-        password,
-        username: username.toLowerCase()
-    })
-
-    if(!newUser) {
-        throw new Error("Something went wrong");
-    }
-
-    return res.status(201).json({
-        statusCode: 200,
-        user: newUser,
-        message: "User is created."
-    })
+    // try {
+    //     const newUser = await User.create({
+    //         fullname,
+    //         email,
+    //         password,
+    //         role,
+    //         username: username.toLowerCase()
+    //     });
+    //     return res.status(201).json({
+    //         statusCode: 200,
+    //         user: newUser,
+    //         message: "User is created."
+    //     });
+    // } catch(error) {
+    //     return res.status(404).json({ message: 'Internal Server Error.' });
+    // }
 }
 
 const loginUser = async (req, res) => {
