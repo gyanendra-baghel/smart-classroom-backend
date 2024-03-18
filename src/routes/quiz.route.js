@@ -1,5 +1,5 @@
 import {Router} from "express"
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+// import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { createQuiz, getQuiz, submitQuiz, quizResult} from "../controllers/quiz.controller.js"
 
 const quizRouter = Router();

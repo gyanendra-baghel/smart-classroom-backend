@@ -6,6 +6,6 @@ const classroomRouter = Router();
 classroomRouter.get('/', getClassroom);
 classroomRouter.post('/create', createClassroom);
 classroomRouter.post('/:classId/enroll', enrollAssignment);
-classroomRouter.post('/classes/:classId/assignments', getAssignments);
+classroomRouter.post('/:classId/assignments', getAssignments);
 
 export default classroomRouter;

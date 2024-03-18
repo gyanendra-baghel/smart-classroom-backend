@@ -8,8 +8,8 @@ export const createClassroom = async (req, res) => {
     const { name, description, teacherId } = req.body;
 
     // Check if the teacher exists
-    const teacher = await Teacher.findById(teacherId);
-    if (!teacher) {
+    const teacher = await User.findById(teacherId);
+    if (!teacher || teacher.role != "Teacher") {
       return res.status(404).json({ message: 'Teacher not found' });
     }
 

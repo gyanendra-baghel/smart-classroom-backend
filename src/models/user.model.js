@@ -30,7 +30,7 @@ const userSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Class'
     }],
-    refreshToken: {
+    accessToken: {
         type: String,
         trim: true
     },
@@ -50,8 +50,15 @@ userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(this.password, password);
 }
 
-userSchema.methods.generateToken = function ({ _id, username }) {
-    return jwt.sign({ _id, username }, process.env.JWT_SECRET_KEY);
+userSchema.methods.generateToken = function(){
+    return jwt.sign(
+        {
+            _id: this._id,
+            email: this.email,
+            username: this.username,
+            fullName: this.fullName
+        }, process.env.ACCESS_TOKEN_SECRET
+    )
 }
 
 export const User = mongoose.model("User", userSchema);

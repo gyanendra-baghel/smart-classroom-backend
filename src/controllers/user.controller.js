@@ -1,5 +1,4 @@
 import { User } from "../models/user.model.js";
-import jwt from "jsonwebtoken";
 
 const registerUser = async (req, res) => {
     const {fullname, email, username, password, role } = req.body
@@ -15,53 +14,68 @@ const registerUser = async (req, res) => {
     if(existedUser) {
         console.log("User Exist");
         return res.status(404).json({ message: 'User with username already exists.' });
-    } else {
-        console.log("User not Exist");
-        return res.status(200).json({ message: 'User with username not already exists.' });
     }
-    // try {
-    //     const newUser = await User.create({
-    //         fullname,
-    //         email,
-    //         password,
-    //         role,
-    //         username: username.toLowerCase()
-    //     });
-    //     return res.status(201).json({
-    //         statusCode: 200,
-    //         user: newUser,
-    //         message: "User is created."
-    //     });
-    // } catch(error) {
-    //     return res.status(404).json({ message: 'Internal Server Error.' });
-    // }
+    
+    try {
+        const newUser = await User.create({
+            fullname,
+            email,
+            password,
+            role,
+            username: username.toLowerCase()
+        });
+        
+        const createdUser = await User.findById(newUser._id).select(
+            "-password -refreshToken"
+            );
+            
+        if (!createdUser) {
+            return res.status(500).json({ message: "Something went wrong while registering the user" });
+        }
+
+        return res.status(201).json({
+            statusCode: 200,
+            user: newUser,
+            message: "User is created."
+        });
+    } catch(error) {
+        return res.status(404).json({ message: 'Internal Server Error.' });
+    }
 }
 
 const loginUser = async (req, res) => {
     const { username, password } = req.body
 
     if(!username) {
-        throw new Error("Username is required!");
+        return res.status(404).json({ message: 'Username is required!' });
     }
-
+    
     const user = await User.findOne({ username })
-
+    
     if(!user) {
-        throw new Error("User does not exists!")
+        return res.status(404).json({ message: 'User does not exists!' });
     }
-
+    
     const isValidPassword = await user.isPasswordCorrect(password);
-
+    
     if(!isValidPassword) {
-        throw new Error("Invalid user credentials.");
+        return res.status(404).json({ message: "Invalid user credentials." });
     }
 
-    // console.log("username and password matched");
+    const accessToken = User.generateToken(user);
+    res.cookie('accessToken', accessToken, { httpOnly: true });
 
-    const accessToken = user.generateToken(user);
+    return res.status(201).json({
+        statusCode: 200,
+        user,
+        message: "User is matched."
+    });
 }
 
-const logoutUser = () => {}
+const logoutUser = () => {
+    res.clearCookie('accessToken');
+    return res.status(200).json({ message: "User logged out successfully." });
+}
 
 export {
     registerUser,
